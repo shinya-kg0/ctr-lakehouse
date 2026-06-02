@@ -1,6 +1,7 @@
 # S3バケット
 resource "aws_s3_bucket" "bronze" {
   bucket = "${var.project_name}-bronze"
+  tags   = { Environment = "dev" }
 }
 
 resource "aws_s3_bucket" "silver" {
