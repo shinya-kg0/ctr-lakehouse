@@ -9,6 +9,12 @@ terraform {
       version = "~> 1.0"
     }
   }
+  backend "s3" {
+    bucket       = "terraform-state-ctr"
+    key          = "prod/terraform.tfstate"
+    region       = "us-east-2"
+    use_lockfile = true
+  }
 }
 
 provider "aws" {
