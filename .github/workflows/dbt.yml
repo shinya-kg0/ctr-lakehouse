@@ -29,7 +29,7 @@ jobs:
         run: | 
           mkdir -p ~/.dbt
           cat > ~/.dbt/profiles.yml <<EOF
-          ctr-lakehouse:
+          ctr_lakehouse:
             target: dev
             outputs:
               dev:
