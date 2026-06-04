@@ -37,3 +37,58 @@ resource "aws_s3_bucket_public_access_block" "gold" {
   restrict_public_buckets = true
 }
 
+# 外部ロケーションの設定
+resource "aws_iam_role" "databricks_unity_catalog" {
+  name = "databricks_unity_catalog_role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Principal = {
+        AWS = [
+          "arn:aws:iam::414351767826:role/unity-catalog-prod-UCMasterRole-14S5ZJVKOTYTL",
+          "arn:aws:iam::742402427301:role/databricks_unity_catalog_role"
+        ]
+      }
+      Action = "sts:AssumeRole"
+      Condition = {
+        StringEquals = {
+          "sts:ExternalId" = "07cfac68-8321-4296-a180-9cc6ab3dbbef"
+        }
+      }
+    }]
+  })
+}
+
+resource "aws_iam_policy" "databricks_unity_catalog" {
+  name = "databricks-unity-catalog-policy"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Action = [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject",
+        "s3:ListBucket",
+        "s3:GetBucketLocation"
+      ]
+      Resource = [
+        aws_s3_bucket.bronze.arn,
+        "${aws_s3_bucket.bronze.arn}/*",
+        aws_s3_bucket.silver.arn,
+        "${aws_s3_bucket.silver.arn}/*",
+        aws_s3_bucket.gold.arn,
+        "${aws_s3_bucket.gold.arn}/*"
+      ]
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "databricks_unity_catalog" {
+  role       = aws_iam_role.databricks_unity_catalog.name
+  policy_arn = aws_iam_policy.databricks_unity_catalog.arn
+}
+
