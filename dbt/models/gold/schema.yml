@@ -1,0 +1,21 @@
+version: 2
+
+models:
+  - name: gold_ctr_by_hour
+    columns:
+      - name: hour
+        tests:
+          - not_null
+          - unique
+
+      - name: impressions
+        tests:
+          - not_null
+
+      - name: clicks
+        tests:
+          - not_null
+
+      - name: ctr_pct
+        tests:
+          - not_null
