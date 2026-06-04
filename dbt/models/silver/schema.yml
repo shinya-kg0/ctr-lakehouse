@@ -2,6 +2,7 @@ version: 2
 
 models:
   - name: silver_clicks
+    description: "Avazuクリックログのクレンジング済みデータ"
     columns:
       - name: id
         tests:
